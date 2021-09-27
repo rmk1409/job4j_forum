@@ -23,7 +23,7 @@ public class RegControl {
 
     @PostMapping("/reg")
     public String reg(@ModelAttribute User user, Model model) {
-        if (userService.add(user)) {
+        if (!userService.add(user)) {
             model.addAttribute("errorMessage", "Try to use another name");
             return "reg";
         }

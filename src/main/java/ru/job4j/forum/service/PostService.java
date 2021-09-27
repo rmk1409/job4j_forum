@@ -2,33 +2,31 @@ package ru.job4j.forum.service;
 
 import org.springframework.stereotype.Service;
 import ru.job4j.forum.model.Post;
+import ru.job4j.forum.store.PostRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 @Service
 public class PostService {
-    private final Map<Integer, Post> idToPost = new ConcurrentHashMap<>();
+    private final PostRepository posts;
 
-    public PostService() {
-        Post post = Post.of("Продаю машину ладу 01.", "desc1");
-        idToPost.put(post.getId(), post);
+    public PostService(PostRepository posts) {
+        this.posts = posts;
     }
 
     public Collection<Post> getAll() {
-        return idToPost.values();
+        List<Post> rsl = new ArrayList<>();
+        posts.findAll().forEach(rsl::add);
+        return rsl;
     }
 
     public Post findById(int id) {
-        return idToPost.get(id);
+        return posts.findById(id).get();
     }
 
     public void save(Post post) {
-        if (post.getId() == 0) {
-            post = Post.of(post.getName(), post.getDesc());
-        }
-
-        idToPost.put(post.getId(), post);
+        posts.save(post);
     }
 }

@@ -1,23 +1,19 @@
 package ru.job4j.forum.model;
 
+import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
+@Entity
+@Table(name = "posts")
 public class Post {
-    private static final AtomicInteger ID_GENERATOR = new AtomicInteger(0);
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    @Column(name = "description")
     private String desc;
     private Calendar created = Calendar.getInstance();
-
-    public static Post of(String name, String desc) {
-        Post post = new Post();
-        post.id = Post.ID_GENERATOR.incrementAndGet();
-        post.name = name;
-        post.desc = desc;
-        return post;
-    }
 
     public int getId() {
         return id;
