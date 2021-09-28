@@ -1,26 +1,23 @@
-# используем язык java. Travis CI поддерживает другие языки тоже.
 language: java
 jdk:
-  - openjdk11
-
+- openjdk11
+install: true
+script: mvn clean package -DskipTests=true
 services:
-  - postgresql
-
+- postgresql
 before_install:
-  - psql -c 'CREATE DATABASE forum' -U postgres
-
-# используем режим обычного пользователя для сборки проекта.
+- psql -c 'CREATE DATABASE forum' -U postgres
 sudo: false
-
-# после выполнения сборки запустить скрипт, который будет собирать статистику по JaCoCo
-# Здесь используется сторонний сервис https://codecov.io/
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
-
-# Отправлять уведомление на почту youremail@smtp.ru (Изменить на свою) если сборка упала
+- bash <(curl -s https://codecov.io/bash)
 notifications:
   email:
     recipients:
-      - youremail@smtp.ru
-    on_success: never # default: change
-    on_failure: always # default: always
+    - youremail@smtp.ru
+    on_success: never
+    on_failure: always
+deploy:
+  provider: heroku
+  api_key:
+    secure: dGS2n0sA3dqfJ0hfrwdXV9ghUthjItBrqbcSTJbubctGHJXlYNWeLbSwYSYGL4X2zREMuNaOBktV+TNlUY21eLgiU7P2gqipAdf1wxOQ1ISkAVigspfPltJVZ4cdEs9Hu+NnUP09FtMCdd54Jb4uVxfHOmWHKD5oK84isw0K0y2jVR4MxFPcWXKs3i3/3k/wwJvashPe9X4AskCX5JEd9CvRo88I4Go2oPMV5xJ7DVrbVrlPPswI7kQnRlL28+uStT4PpYKpSDQmNDXd76fS0Sfsf12oDBaDr3UvqudYNzRE3k+1EL+fQiw4Uc8bSKV1yAXn4H6q7E5q/jnh2Gs49389xu5bLVzTmR51QSQ4bB9ZPT8Gsh2076irHI08UB8FnQHFoAgHAKL+BCFgfzcJKI08mDPUxaTvRU1MiDHAomE+tPNQZ1fGZSUUBCKf1sBBUwtk9JhPNEz5j9U2C50vkiAkio6VwDyxaEXLknat/yULQY5wqAiVinf6u1FsXuTsla7B7dCEbIqi05Za487+Sj8DZY06LSWJ/LOodBg3XX1G6q1gFrQmulGWF7XeyVC5360hfxUAYO1RT2WNiP0qNGBQRNmQE70EX+NRrPosgDPCfCWSJnpzBnt4CFxOdm4W/QSS6Qgl+TQD4ZDCC8tIW8/VdIg9kXCcitAEuUgL9ZA=
+  app: rmk1409-forum
