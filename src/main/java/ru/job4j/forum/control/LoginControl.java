@@ -1,38 +1,39 @@
 package ru.job4j.forum.control;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import ru.job4j.forum.model.User;
-import ru.job4j.forum.service.UserService;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpSession;
-import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class LoginControl {
-    private final UserService userService;
-
-    public LoginControl(UserService userService) {
-        this.userService = userService;
-    }
-
     @GetMapping("/login")
-    public String getPage() {
+    public String loginPage(@RequestParam(value = "error", required = false) String error,
+                            @RequestParam(value = "logout", required = false) String logout,
+                            Model model) {
+        String errorMessge = null;
+        if (error != null) {
+            errorMessge = "Name or Password is incorrect !!";
+        }
+        if (logout != null) {
+            errorMessge = "You have been successfully logged out !!";
+        }
+        model.addAttribute("errorMessage", errorMessge);
         return "login";
     }
 
-    @PostMapping("/login")
-    public String login(@ModelAttribute User user, Model model, HttpSession session) {
-        User foundUser = userService.findByName(user.getName());
-        if (Objects.isNull(foundUser) || !Objects.equals(foundUser.getPassword(), user.getPassword())) {
-            model.addAttribute("errorMessage", "Username or Password is incorrect !!");
-            return "login";
+    @GetMapping("/logout")
+    public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-
-        session.setAttribute("authUser", user);
-        return "redirect:index";
+        return "redirect:/login?logout=true";
     }
 }

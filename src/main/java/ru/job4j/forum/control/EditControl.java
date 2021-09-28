@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.forum.model.Post;
 import ru.job4j.forum.service.PostService;
 
-import javax.servlet.http.HttpSession;
 import java.util.Objects;
 
 @Controller
@@ -21,11 +20,7 @@ public class EditControl {
     }
 
     @GetMapping("/edit")
-    public String getPage(HttpSession session, @RequestParam(required = false) Integer id, Model model) {
-        if (Objects.isNull(session.getAttribute("authUser"))) {
-            return "redirect:login";
-        }
-
+    public String getPage(@RequestParam(required = false) Integer id, Model model) {
         if (Objects.nonNull(id)) {
             model.addAttribute("post", posts.findById(id));
         }

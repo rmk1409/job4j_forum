@@ -13,10 +13,6 @@ public class UserService {
         this.users = users;
     }
 
-    public User findByName(String name) {
-        return users.findByName(name);
-    }
-
     public boolean add(User user) {
         try {
             users.save(user);

@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import ru.job4j.forum.service.PostService;
 
 import javax.servlet.http.HttpSession;
-import java.util.Objects;
 
 @Controller
 public class IndexControl {
@@ -18,10 +17,6 @@ public class IndexControl {
 
     @GetMapping({"/", "/index"})
     public String index(Model model, HttpSession session) {
-        if (Objects.isNull(session.getAttribute("authUser"))) {
-            return "redirect:login";
-        }
-
         model.addAttribute("posts", posts.getAll());
         return "index";
     }
